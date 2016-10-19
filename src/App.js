@@ -10,7 +10,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			period  : 'week',
+			timeUnit: 'week',
 			dates   : [],
 			scores  : [],
 			maxItems: 30
@@ -23,7 +23,7 @@ class App extends React.Component {
 
 	fetchData = () => {
 		var url = process.env.REACT_APP_PAGE_SPEED_API_URL;
-		if ('day' === this.state.period) {
+		if ('day' === this.state.timeUnit) {
 			url += '?period=day';
 		}
 
@@ -32,18 +32,21 @@ class App extends React.Component {
 		xhr({
 			url: url
 		}, function (err, data) {
+			var slice = [];
 			var dates = [];
 			var scores = [];
 			var response = JSON.parse(data.body);
 
-			var slice = response.data.slice(Math.max(response.data.length - this.state.maxItems, 1));
+			if (parseInt(self.state.maxItems, 10) === 0) {
+				slice = response.data;
+			} else {
+				slice = response.data.slice(Math.max(response.data.length - self.state.maxItems, 1));
+			}
 
 			for (var i = 0; i < slice.length; i++) {
 				dates.push(slice[i].timestamp);
 				scores.push(Math.round(slice[i].t));
 			}
-
-			console.log(slice);
 
 			self.setState({
 				dates : dates,
@@ -53,18 +56,18 @@ class App extends React.Component {
 		});
 	};
 
-	changePeriod = (evt) => {
+	changeTimeUnit = (evt) => {
 		this.setState({
-			period: evt.target.value,
-			dates : [],
-			scores: []
+			timeUnit: evt.target.value,
+			dates   : [],
+			scores  : []
 		}, this.fetchData);
 	};
 
 	changeMaxItems = (evt) => {
 		this.setState({
 			maxItems: evt.target.value
-		});
+		}, this.fetchData);
 	};
 
 	render() {
@@ -85,13 +88,13 @@ class App extends React.Component {
 						<fieldset className="form-group">
 							<div className="form-check">
 								<label className="form-check-label">
-									<input name="period" type="radio" checked={this.state.period === 'week'} value="week" onChange={this.changePeriod} className="form-check-input" />
+									<input name="timeUnit" type="radio" checked={this.state.timeUnit === 'week'} value="week" onChange={this.changeTimeUnit} className="form-check-input" />
 									Weeks
 								</label>
 							</div>
 							<div className="form-check">
 								<label className="form-check-label">
-									<input name="period" type="radio" checked={this.state.period === 'day'} value="day" onChange={this.changePeriod} className="form-check-input" />
+									<input name="timeUnit" type="radio" checked={this.state.timeUnit === 'day'} value="day" onChange={this.changeTimeUnit} className="form-check-input" />
 									Days
 								</label>
 							</div>
@@ -107,13 +110,6 @@ class App extends React.Component {
 							</div>
 						</fieldset>
 					</form>
-				</div>
-				<div className="row">
-					<div className="col-xs-12 col-md-6 offset-md-3">
-						<h3 id="default-stacked">Default (stacked)</h3>
-						<p>By default, any number of checkboxes and radios that are immediate sibling will be vertically stacked and appropriately spaced with
-							<code className="highlighter-rouge">.form-check</code>.</p>
-					</div>
 				</div>
 			</div>
 		);
