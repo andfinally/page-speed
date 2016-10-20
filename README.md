@@ -4,6 +4,7 @@ React app showing page speed data in a simple chart
 
 ## Installation
 
+Save a copy of `.sample-env` as `.env`, adding the URL for the API.
 `npm install`
 
 ## Server
