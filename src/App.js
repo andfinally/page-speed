@@ -75,7 +75,7 @@ class App extends React.Component {
 			<div>
 				<div className="row">
 					<div className="col-xs-12">
-						<h1 className="text-xs-center">Average page speed</h1>
+						<h1 className="text-xs-center">Page speed index</h1>
 						<Plot
 							xData={this.state.dates}
 							yData={this.state.scores}
