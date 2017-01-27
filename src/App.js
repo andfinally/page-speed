@@ -13,7 +13,7 @@ class App extends React.Component {
       timeUnit: 'week',
       dates   : [],
       scores  : [],
-      maxItems: 30
+      maxItems: 0
     };
     this.timer = setInterval(this.fetchData, 3600000);
   };
